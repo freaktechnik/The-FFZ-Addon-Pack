@@ -243,9 +243,16 @@ class FFZAP extends FrankerFaceZ.utilities.module.Module {
         }
 
         if (this.chat.context.get('ffzap.core.enable_highlight_notification') && msg.message.mentioned && !msg.message.deleted && (this.chat.context.get('ffzap.core.highlight_notification_focused') || document.visibilityState !== 'visible')) {
-            new Notification(`Mentioned by @${msg.message.user.displayName} in ${msg.channel}'s chat`, {
+            const notif = new Notification(`Mentioned by @${msg.message.user.displayName} in ${msg.channel}'s chat`, {
                 body: msg.message.message,
                 silent: this.chat.context.get('ffzap.core.enable_highlight_sound'),
+                icon: 'https://cdn.ffzap.com/icon32.png',
+            });
+            const closeTimer = setTimeout(() => {
+                notif.close();
+            }, 10000); // Can't be bothered to make a number setting for the seconds.
+            notif.addEventListener('close', () => {
+                clearTimeout(closeTimer);
             });
         }
     }
